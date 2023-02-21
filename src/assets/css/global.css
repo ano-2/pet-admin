@@ -1,0 +1,50 @@
+/* 全局样式 */
+body,
+html,
+#app {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  min-width: 1024px;
+}
+a, a:hover, a:active, a:visited, a:link, a:focus {
+    outline: none;
+    background: none;
+    text-decoration: none;
+}
+
+ul,
+li {
+    list-style: none;
+}
+
+/* 整个滚动条 */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+/* 滚动条有滑块的轨道部分 */
+::-webkit-scrollbar-track-piece {
+    background-color: transparent;
+    border-radius: 5px;
+}
+
+/* 滚动条滑块(竖向:vertical 横向:horizontal) */
+::-webkit-scrollbar-thumb {
+    cursor: pointer;
+    background-color: #28f;
+    border-radius: 5px;
+}
+
+/* 滚动条滑块hover */
+::-webkit-scrollbar-thumb:hover {
+    background-color: #2aecbf;
+}
+
+/* 同时有垂直和水平滚动条时交汇的部分 */
+::-webkit-scrollbar-corner {
+    display: block;
+}
+
+/* 修复交汇时出现的白块 */
