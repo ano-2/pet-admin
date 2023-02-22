@@ -4,12 +4,9 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <!--  -->
 <template>
+
     <!-- 面包屑 start -->
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-        <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-    </el-breadcrumb>
+    <Bread :breadlist="breadList"/>
     <!-- 面包屑 end -->
     <el-card>
       <el-row :gutter="30">
@@ -34,14 +31,17 @@
         <el-table :data="state.goodList" style="width: 100%" stripe>
             <el-table-column type="index"></el-table-column>
             <el-table-column type="index"> </el-table-column>
-            <el-table-column prop="goods_name" label="商品名称" width="180">
+            <el-table-column prop="goods_name" label="商品名称" width="200" >
             </el-table-column>
-            <el-table-column prop="goods_price" label="商品价格" width="180">
+            <el-table-column prop="goods_price" label="商品价格">
             </el-table-column>
-            <el-table-column prop="goods_weight" label="商品重量">
-            </el-table-column>
-            <el-table-column prop="mg_state" label="状态" width="200"></el-table-column>
-          <el-table-column fixed="right" label="Operations" width="200">
+            <el-table-column prop="goods_weight" label="商品重量"></el-table-column>
+            <el-table-column prop="goods_number" label="商品数量"></el-table-column>
+            <el-table-column prop="upd_time" label="更新时间"></el-table-column>
+            <el-table-column prop="cat_id" label="类别id"></el-table-column>
+            <el-table-column prop="cat_one_id" label="类别一级id"></el-table-column>
+            <el-table-column prop="goods_state" label="状态" ></el-table-column>
+          <el-table-column fixed="right" label="Operations" width="100">
             <template #default="scope">
               <el-tooltip
                 class="item"
@@ -120,6 +120,21 @@
 <script setup>
 import { reactive, getCurrentInstance } from 'vue'
 import { ElMessage } from 'element-plus'
+import Bread from '@/components/sideLists/bread.vue'
+// 面包屑
+const breadList = [{
+  id: 1,
+  name: '首页',
+  path: '/home'
+}, {
+  id: 2,
+  name: '商品管理',
+  path: '/goods'
+}, {
+  id: 3,
+  name: '商品列表',
+  path: '/goods'
+}]
 // 获取商品列表
 const internalInstance = getCurrentInstance()
 const queryInfo = reactive({
@@ -140,7 +155,7 @@ const getGoodsList = async () => {
   }
   state.total = res.data.total
   state.goodList = res.data.goods
-
+  console.log(res.data)
 //   state.total = res.data.total
 }
 getGoodsList()

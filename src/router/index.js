@@ -6,10 +6,13 @@ const Welcome = () =>
   import(/* webpackChunkName: "Welcome" */ '../components/welcome/welcome.vue')
 
 const Users = () =>
-  import(/* webpackChunkName: "Users" */ '../components/sideLists/users.vue')
+  import(/* webpackChunkName: "Users" */ '@/views/User.vue')
 
 const Goods = () =>
-  import(/* webpackChunkName: "Goods" */ '../components/sideLists/goods.vue')
+  import(/* webpackChunkName: "Goods" */ '@/views/good/Goods.vue')
+
+const Cate = () =>
+  import(/* webpackChunkName: "Cate" */ '@/views/good/Cate.vue')
 
 const routes = [
   {
@@ -38,6 +41,10 @@ const routes = [
       {
         path: '/goods',
         component: Goods
+      },
+      {
+        path: '/categories',
+        component: Cate
       }
     ]
   }

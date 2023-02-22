@@ -4,11 +4,7 @@
 <!--  -->
 <template>
     <!-- 面包屑 start -->
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-        <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-    </el-breadcrumb>
+    <Bread :breadlist="breadList"/>
     <!-- 面包屑 end -->
     <el-card>
       <el-row :gutter="30">
@@ -36,7 +32,17 @@
           <el-table-column prop="email" label="邮箱" width="200"> </el-table-column>
           <el-table-column prop="mobile" label="电话" width="200"></el-table-column>
           <el-table-column prop="role_name" label="角色" width="200"></el-table-column>
-          <el-table-column prop="mg_state" label="状态" width="200"></el-table-column>
+          <el-table-column prop="mg_state" label="状态" width="200">
+            <template v-slot="scope">
+              <el-switch
+                v-model="scope.row.mg_state"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+                @change="changeState(scope.row)"
+              >
+              </el-switch>
+            </template>
+          </el-table-column>
           <el-table-column fixed="right" label="Operations" width="200">
             <template #default="scope">
               <el-tooltip
@@ -150,8 +156,23 @@
 <script setup>
 import { ref, reactive, getCurrentInstance } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { useUsersStore } from '../../store/user'
+import { useUsersStore } from '@/store/user'
+import Bread from '@/components/sideLists/bread.vue'
 
+// 面包屑
+const breadList = [{
+  id: 1,
+  name: '首页',
+  path: '/home'
+}, {
+  id: 2,
+  name: '用户管理',
+  path: '/users'
+}, {
+  id: 3,
+  name: '用户列表',
+  path: '/users'
+}]
 const store = useUsersStore()
 
 const state = reactive({
@@ -258,7 +279,22 @@ const commitEditForm = () => {
     })
   }
 }
+// 改变用户状态
+const changeState = async (userinfo) => {
+  if (store.userInfo.rid !== 0) {
+    userinfo.mg_state = !userinfo.mg_state
+    return ElMessage.error('权限不足')
+  }
+  const { data: res } = await internalInstance.appContext.config.globalProperties.$http.put(
+        `users/${userinfo.id}/state/${userinfo.mg_state}`
+  )
+  if (res.meta.status !== 200) {
+    userinfo.mg_state = !userinfo.mg_state
+    return ElMessage.error('更新用户状态失败')
+  }
 
+  ElMessage.success('更新用户状态成功')
+}
 // 删除用户确认
 const deleteor = async (row) => {
   if (store.userInfo.rid !== 0) return ElMessage.error('权限不足')
@@ -272,7 +308,7 @@ const deleteor = async (row) => {
     .catch((err) => ElMessage.error(err))
 
   if (result !== 'confirm') {
-    return internalInstance.appContext.config.globalProperties.$http.info('已取消删除操作')
+    return ElMessage.info('已取消删除操作')
   }
   const { data: res } = await internalInstance.appContext.config.globalProperties.$http.delete('users/' + row.id)
   if (res.meta.status !== 200) {
@@ -316,6 +352,8 @@ const reset = () => {
     addroles.value.resetFields()
   }
 }
+// 添加用户
+
 const isAddUsers = () => {
   if (addroles.value !== null) {
     addroles.value.validate(async (valid) => {
