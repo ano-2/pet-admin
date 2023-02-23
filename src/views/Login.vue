@@ -78,7 +78,6 @@ export default {
         }
         const { data: res } = await axios.post('login', info)
         if (res.meta.status !== 200) {
-          console.log(res.meta)
           return ElMessage.error(res.meta.msg)
         } else {
           const userI = { username: res.data.username, rid: res.data.rid, id: res.data.id }

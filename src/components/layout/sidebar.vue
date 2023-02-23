@@ -56,8 +56,13 @@ const getMenuList = async () => {
   if (res.meta.status !== 200) {
     return ElMessage.error('获取菜单失败！ get Menu fail!')
   } else {
-    ElMessage.success('登录成功 successful !')
-    menuList.push(...res.data)
+    res.data.forEach(element => {
+      if (element.id !== 145 && element.id !== 102) {
+        menuList.push(element)
+      }
+    })
+    // ElMessage.success('登录成功 successful !')
+    // menuList.push(...res.data)
   }
 }
 getMenuList()

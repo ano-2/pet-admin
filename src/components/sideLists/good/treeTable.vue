@@ -169,8 +169,6 @@ let addItem = reactive({
 })
 let diaDilogContent = ref('')
 const add = (node, data) => {
-  console.log(node)
-  console.log(data)
   diaDilogContent = `将在“${node.parent.data.cat_name}”下创建子分类`
   addItem.cat_pid = data.cat_pid
   addItem.cat_level = data.cat_level

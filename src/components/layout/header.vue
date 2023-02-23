@@ -2,7 +2,7 @@
 <!--  -->
 <template>
   <div class="headercontent">
-    <span>manage system</span>
+    <span>PP Love manage system</span>
         <div class="toolbar">
           <el-dropdown>
             <div class="userIcon">
@@ -28,7 +28,7 @@ import { storeToRefs } from 'pinia'
 // 用户属性存储到store
 const store = useUsersStore()
 const { userInfo } = storeToRefs(store)
-console.log(userInfo)
+
 const router = useRouter()
 const logout = () => {
   window.sessionStorage.clear()

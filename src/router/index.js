@@ -14,6 +14,12 @@ const Goods = () =>
 const Cate = () =>
   import(/* webpackChunkName: "Cate" */ '@/views/good/Cate.vue')
 
+const Rights = () =>
+  import(/* webpackChunkName: "Right" */ '@/views/right/Rights.vue')
+
+const Role = () =>
+  import(/* webpackChunkName: "Right" */ '@/views/right/Role.vue')
+
 const routes = [
   {
     path: '/',
@@ -45,6 +51,14 @@ const routes = [
       {
         path: '/categories',
         component: Cate
+      },
+      {
+        path: '/rights',
+        component: Rights
+      },
+      {
+        path: '/roles',
+        component: Role
       }
     ]
   }

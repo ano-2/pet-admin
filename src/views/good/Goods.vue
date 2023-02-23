@@ -155,7 +155,6 @@ const getGoodsList = async () => {
   }
   state.total = res.data.total
   state.goodList = res.data.goods
-  console.log(res.data)
 //   state.total = res.data.total
 }
 getGoodsList()
@@ -168,6 +167,15 @@ const handleCurrentChange = (newValue) => {
   queryInfo.pagenum = newValue
   getGoodsList()
 }
+// 编辑商品
+const editor = (row) => {
+  ElMessage.info('（待开发）编辑商品' + row.id)
+}
+// 删除商品
+const deleteor = (row) => {
+  ElMessage.error('（待开发）删除商品' + row.id)
+}
+
 </script>
 <style scoped lang='less'>
 .el-card{

@@ -1,6 +1,5 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <!-- eslint-disable vue/no-unused-vars -->
-<!-- eslint-disable vue/multi-word-component-names -->
 <!--  -->
 <template>
     <!-- 面包屑 start -->
@@ -43,8 +42,9 @@
               </el-switch>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="Operations" width="200">
+          <el-table-column fixed="right" label="Operations" width="150">
             <template #default="scope">
+              <!-- edit 用户 -->
               <el-tooltip
                 class="item"
                 effect="dark"
@@ -55,16 +55,24 @@
                 <el-button type="primary" icon="el-icon-edit" @click="editor(scope.row)" size="small" circle />
               </el-tooltip>
               <!-- 删除用户 -->
-
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    content="Delete 删除"
-                    placement="top"
-                    :enterable="false"
-                  >
-                    <el-button  type="danger" icon="el-icon-delete" @click="deleteor(scope.row)" size="small" circle />
-                  </el-tooltip>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="Delete 删除"
+                placement="top"
+                :enterable="false"
+              >
+                <el-button  type="danger" icon="el-icon-delete" @click="deleteor(scope.row)" size="small" circle />
+              </el-tooltip>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="Set Role 设置角色"
+                placement="top"
+                :enterable="false"
+              >
+                <el-button  type="warning" icon="el-icon-setting" size="small" circle />
+              </el-tooltip>
             </template>
           </el-table-column>
         </el-table>
@@ -363,13 +371,18 @@ const isAddUsers = () => {
         addUserInfo
       )
       if (res.meta.status !== 201) {
-        ElMessage.error('添加用户失败')
+        return ElMessage.error('添加用户失败')
       }
       ElMessage.success('添加用户成功')
+      // 初始赋予游客角色 rid: 42
+      await internalInstance.appContext.config.globalProperties.$http.put(
+      `users/${res.data.id}/role`, { rid: 42 })
       dialogVisible.value = false
+      getUserList()
     })
   }
 }
+
 </script>
 <style scoped lang='less'>
 .el-card{
