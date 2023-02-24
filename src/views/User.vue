@@ -71,7 +71,7 @@
                 placement="top"
                 :enterable="false"
               >
-                <el-button  type="warning" icon="el-icon-setting" size="small" circle />
+                <el-button  type="warning" icon="el-icon-setting" size="small" @click="setor(scope.row)" circle />
               </el-tooltip>
             </template>
           </el-table-column>
@@ -157,6 +157,33 @@
           </span>
         </template>
       </el-dialog>
+      <!-- 设置权限 -->
+      <el-dialog title="设置权限" v-model="setorShow" width="30%">
+    <div>
+      <p>当前用户：{{ state.setRole.username }}</p>
+      <p>当前角色：{{ state.setRole.role_name }}</p>
+      <p>
+        分配新角色：
+        <el-select v-model="state.selectedRoleID" placeholder="请选择新角色">
+          <el-option
+            v-for="item in state.roleList"
+            :key="item.id"
+            :label="item.roleName"
+            :value="item.id"
+            :disabled="item.roleName==state.setRole.role_name"
+          >
+          </el-option>
+        </el-select>
+      </p>
+    </div>
+
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="setorShow = false">取 消</el-button>
+        <el-button type="primary" @click="confirmSetRole">确 定</el-button>
+      </span>
+    </template>
+  </el-dialog>
     </div>
 
 </template>
@@ -186,7 +213,9 @@ const store = useUsersStore()
 const state = reactive({
   userLists: [],
   total: 0,
-  editForm: {}
+  editForm: {},
+  setRole: {},
+  selectedRoleID: ''
 })
 // 请求管理员参数
 const userParm = reactive({
@@ -381,6 +410,31 @@ const isAddUsers = () => {
       getUserList()
     })
   }
+}
+// 修改角色
+const setorShow = ref(false)
+const setor = async (user) => {
+  state.setRole = user
+  const { data: res } = await internalInstance.appContext.config.globalProperties.$http.get('roles')
+  if (res.meta.status !== 200) {
+    return ElMessage.error('获取用户列表失败')
+  }
+  state.roleList = res.data
+  setorShow.value = true
+}
+const confirmSetRole = async () => {
+  if (!state.selectedRoleID) { return ElMessage.error('请选择一个角色') }
+  if (!state.selectedRoleID) {
+    return ElMessage.error('请选择一个角色')
+  }
+  const { data: res } = await internalInstance.appContext.config.globalProperties.$http.put(`users/${state.setRole.id}/role`,
+    { rid: state.selectedRoleID })
+  if (res.meta.status !== 200) {
+    return ElMessage.error('修改管理员权限失败')
+  }
+  setorShow.value = false
+  getUserList()
+  ElMessage.success('修改管理员权限成功')
 }
 
 </script>
