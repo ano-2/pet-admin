@@ -12,7 +12,7 @@
       <el-row :gutter="30">
         <el-col :span="9">
           <el-input
-            placeholder="搜索用户"
+            placeholder="搜索商品"
             class="input-with-select"
             v-model="queryInfo.query"
             clearable
@@ -22,7 +22,7 @@
               <el-button icon="el-icon-search" @click="getGoodsList"></el-button>
             </template> </el-input>
           </el-col>
-        <el-col :span="9"><el-button type="success" @click="addusers" round><el-icon><plus /></el-icon>添加用户</el-button></el-col>
+        <el-col :span="9"><el-button type="success" @click="addGoods" round><el-icon><plus /></el-icon>添加商品</el-button></el-col>
       </el-row>
       </el-card>
     <!-- table -->
@@ -79,38 +79,6 @@
         </el-pagination>
         <!-- 分页部分 end-->
       </el-card>
-      <!-- table end -->
-      <!-- dialog  修改用户-->
-      <!-- <el-dialog
-        title="修改用户"
-        v-model="editorShow"
-        width="30%"
-        @close="editFormClose"
-      >
-        <el-form
-          :model="state.editForm"
-          :rules="editRules"
-          ref="editruleForm"
-          label-width="100px"
-          class="demo-ruleForm"
-        >
-          <el-form-item label="用户名">
-            <el-input v-model="state.editForm.username" disabled></el-input>
-          </el-form-item>
-          <el-form-item label="邮箱" prop="email">
-            <el-input v-model="state.editForm.email"></el-input>
-          </el-form-item>
-          <el-form-item label="手机号" prop="mobile">
-            <el-input v-model="state.editForm.mobile"></el-input>
-          </el-form-item> </el-form>
-          <template #footer>
-            <span class="dialog-footer">
-              <el-button @click="editorShow = false">取 消</el-button>
-              <el-button type="primary" @click="commitEditForm">确 定</el-button>
-            </span>
-        </template>
-      </el-dialog> -->
-
     </div>
 
   <div></div>
@@ -166,15 +134,6 @@ const handleCurrentChange = (newValue) => {
   queryInfo.pagenum = newValue
   getGoodsList()
 }
-// 编辑商品
-const editor = (row) => {
-  ElMessage.info('（待开发）编辑商品' + row.id)
-}
-// 删除商品
-const deleteor = (row) => {
-  ElMessage.error('（待开发）删除商品' + row.id)
-}
-
 </script>
 <style scoped lang='less'>
 .el-card{

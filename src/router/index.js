@@ -14,6 +14,9 @@ const Goods = () =>
 const Cate = () =>
   import(/* webpackChunkName: "Cate" */ '@/views/good/Cate.vue')
 
+const AddGood = () =>
+  import(/* webpackChunkName: "Cate" */ '@/views/good/Add.vue')
+
 const Rights = () =>
   import(/* webpackChunkName: "Right" */ '@/views/right/Rights.vue')
 
@@ -28,7 +31,7 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import(/* webpackChunkName: "Login" */ '../views/Login.vue')
+    component: () => import(/* webpackChunkName: "loginPage" */ '../views/loginPage.vue')
   },
   {
     path: '/home',
@@ -47,6 +50,10 @@ const routes = [
       {
         path: '/goods',
         component: Goods
+      },
+      {
+        path: '/addGood',
+        component: AddGood
       },
       {
         path: '/categories',
