@@ -10,8 +10,6 @@
           :collapse="isCollapse"
           :collapse-transition="true"
           :default-active="activePath"
-          @open="handleOpen"
-          @close="handleClose"
           :router="true"
         >
           <!-- 菜单项 -->
@@ -56,8 +54,13 @@ const getMenuList = async () => {
   if (res.meta.status !== 200) {
     return ElMessage.error('获取菜单失败！ get Menu fail!')
   } else {
-    ElMessage.success('登录成功 successful !')
     menuList.push(...res.data)
+    // const arr = [145, 103,102]
+    // res.data.forEach(element => {
+    //   if (!arr.includes(element.id)) {
+    //     menuList.push(element)
+    //   }
+    // })
   }
 }
 getMenuList()
@@ -74,13 +77,7 @@ const saveNavState = (activePath) => {
   window.sessionStorage.setItem('activePath', activePath)
 }
 activePath.value = window.sessionStorage.getItem('activePath')
-//
-const handleOpen = (key, keyPath) => {
-  console.log('handleOpen')
-}
-const handleClose = (key, keyPath) => {
-  console.log('handleClose')
-}
+
 const isCollapse = ref(false)
 const changeCollapse = () => {
   isCollapse.value = !isCollapse.value

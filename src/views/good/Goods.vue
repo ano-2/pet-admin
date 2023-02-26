@@ -30,7 +30,6 @@
       <el-card class="box-card">
         <el-table :data="state.goodList" style="width: 100%" stripe>
             <el-table-column type="index"></el-table-column>
-            <el-table-column type="index"> </el-table-column>
             <el-table-column prop="goods_name" label="商品名称" width="200" >
             </el-table-column>
             <el-table-column prop="goods_price" label="商品价格">
@@ -140,7 +139,7 @@ const handleCurrentChange = (newValue) => {
 // 添加商品
 const router = useRouter()
 const addGoods = () => {
-  router.push('/goods/add')
+  router.push('/addGood')
 }
 
 </script>

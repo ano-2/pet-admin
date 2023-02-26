@@ -2,6 +2,7 @@ import axios from 'axios'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
+// axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
 axios.defaults.baseURL = 'http://43.139.223.94:8889/api/private/v1/'
 const instance = axios.create({
 
