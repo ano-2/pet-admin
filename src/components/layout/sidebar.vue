@@ -54,22 +54,13 @@ const getMenuList = async () => {
   if (res.meta.status !== 200) {
     return ElMessage.error('获取菜单失败！ get Menu fail!')
   } else {
-    // <<<<<<< HEAD
-    //     res.data.forEach(element => {
-    //       if (element.id !== 145 && element.id !== 102) {
-    //         menuList.push(element)
-    //       }
-    //     })
-    //     // ElMessage.success('登录成功 successful !')
-    //     // menuList.push(...res.data)
-
-    menuList.push(...res.data)
-    // const arr = [145, 103,102]
-    // res.data.forEach(element => {
-    //   if (!arr.includes(element.id)) {
-    //     menuList.push(element)
-    //   }
-    // })
+    // menuList.push(...res.data)
+    const arr = [145, 102]
+    res.data.forEach(element => {
+      if (!arr.includes(element.id)) {
+        menuList.push(element)
+      }
+    })
   }
 }
 getMenuList()

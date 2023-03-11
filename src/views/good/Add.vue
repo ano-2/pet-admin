@@ -53,7 +53,6 @@
                           <!-- action 上传的接口地址 -->
                           <el-upload
                             ref="uploadRef"
-                            v-model:file-list="uploadPic"
                             class="upload-demo"
                             action='http://43.139.223.94:8889/api/private/v1/upload'
                             list-type="picture"
@@ -62,17 +61,21 @@
                             :on-remove="handleRemove"
                             :auto-upload="false"
                           >
-                            <el-button type="primary">Click to upload</el-button>
+                            <el-button type="primary">Click to select pictures</el-button>
                             <template #tip>
                               <div class="el-upload__tip">
-                                jpg/png files with a size less than 500kb
+                                jpg/png files had better with a size less than 1MB
                               </div>
                             </template>
                           </el-upload>
+                          <div class="uploadBtn">
+                            <el-button type="success" @click="submitUpload">upload</el-button>
+                            <div style="color:red;">上传后记得点击upload按钮,默认第一张为商品封面</div>
+                          </div>
                         </el-tab-pane>
                         <el-tab-pane label="商品内容" name='4'>
                           <el-form-item label="商品介绍" >
-                            <mavon-editor v-model="state.addform.goods_introduce"/>
+                            <mavon-editor ref="mavon" @imgAdd="$imgAdd" v-model="state.addform.goods_introduce"/>
                               <!-- <el-input v-model="state.addform.goods_introduce" show-word-limit type="textarea" maxlength="100"/> -->
                             <el-button type="primary" class="addBtn"  @click="addGood">添加商品</el-button>
                           </el-form-item>
@@ -103,6 +106,7 @@ const state = reactive({
     goods_weight: 0,
     goods_cat: '',
     goods_introduce: '',
+    goods_big_logo: '',
     pics: [],
     attrs: []
   },
@@ -114,7 +118,7 @@ const state = reactive({
 const addRules = reactive({
   goods_name: [
     { required: true, message: '不能为空! need a value!', trigger: 'blur' },
-    { min: 3, max: 30, message: 'Length should be 3 to 30', trigger: 'blur' }
+    { min: 3, max: 50, message: 'Length should be 3 to 50', trigger: 'blur' }
   ],
   goods_price: [
     { required: true, message: '不能为空! need a value!', trigger: 'blur' },
@@ -170,15 +174,25 @@ const beforeTabLeave = (activeName, oldActiveName) => {
 const headerObj = {
   Authorization: window.sessionStorage.getItem('token')
 }
-const uploadPic = []
+
 // 获得上传成功的返回值
 const handleUpload = (response) => {
-  const picInfo = { pic: response.data.url }
+  const responseUrl = response
+  console.log(response)
+  const picInfo = { pic: responseUrl.data.url }
   state.addform.pics.push(picInfo)
-  console.log(response.data)
+  if (state.addform.goods_big_logo === '') { state.addform.goods_big_logo = responseUrl.data.url }
+  console.log(state.addform)
   ElMessage.success('upload图片成功!')
-  // console.log(activeName, oldActiveName)
 }
+// const handleUpload = (response) => {
+//   const picInfo = { pic: response.data.url }
+//   state.addform.pics.push(picInfo)
+//   state.addform.goods_big_logo = response.data.url
+//   console.log(state.addform.goods_big_logo)
+//   ElMessage.success('upload图片成功!')
+//   // console.log(activeName, oldActiveName)
+// }
 // 移除图片
 const handleRemove = (file) => {
   console.log(file.response.data.tmp_path)
@@ -187,8 +201,8 @@ const handleRemove = (file) => {
   // 1.去找addform.pics的索引值
   const i = state.addform.pics.findIndex(x => x.pic === removePath)
   state.addform.pics.splice(i, 1)
-  console.log(uploadPic)
 }
+
 // 3.商品属性
 // 点击tabs
 const tabClicked = async (TabsPaneContext) => {
@@ -232,46 +246,56 @@ const uploadRef = ref()
 const submitUpload = () => {
   uploadRef.value.submit()
 }
+// 富文本编辑器上传图片
+const mavon = ref()
+const $imgAdd = async (pos, $file) => {
+  const formdata = new FormData()
+  formdata.append('file', $file)
+  const { data: res } = await internalInstance.appContext.config.globalProperties.$http({ url: 'upload', method: 'post', data: formdata })
+  if (res.meta.status !== 200) {
+    return ElMessage.error('上传图片失败')
+  }
+  // 将返回的图片url rewrite富文本编辑器中
+  mavon.value.$img2Url(pos, res.data.url)
+  // console.log(state.addform.goods_introduce)
+}
+// 添加商品功能
 const ruleFormRef = ref(null)
 const addGood = async () => {
   ruleFormRef.value.validate(async (valid) => {
     if (!valid) {
       return
     }
+    submitUpload()
     // 先上传图片回调函数修改state.addform,pics后才能提交添加
-    new Promise(function (resolve) {
-      submitUpload()
-      setTimeout(function () {
-        resolve()
-      }, 100)
-    }).then(async () => {
-      // 提交前的业务逻辑
-      // 深拷贝一份 不影响双向绑定的UI组件内容
-      const form = _.cloneDeep(state.addform)
-      // 拼接类别id变成一个逗号分隔的字符串
-      form.goods_cat = form.goods_cat.join(',')
-      // 处理动态参数
-      state.manyTable.forEach(item => {
-        const newInfo = { attr_id: item.attr_id, attr_vals: item.attr_vals.join(' ') }
-        state.addform.attrs.push(newInfo)
-      })
-      // 处理静态参数
-      state.onlyTable.forEach(item => {
-        const newInfo = { attr_id: item.attr_id, attr_vals: item.attr_vals }
-        state.addform.attrs.push(newInfo)
-      })
-      form.attrs = state.addform.attrs
-      console.log(form)
-      const { data: result } = await internalInstance.appContext.config.globalProperties.$http.post('goods', form)
-      console.log(result)
-      if (result.meta.status !== 201) {
-        return ElMessage.error(`添加商品失败: ${result.meta.msg}`)
-      }
-      ElMessage.success(`${result.meta.msg}`)
-      router.push('/goods')
+    // 提交前的业务逻辑
+    // 深拷贝一份 不影响双向绑定的UI组件内容
+    const form = _.cloneDeep(state.addform)
+    // 拼接类别id变成一个逗号分隔的字符串
+    form.goods_cat = form.goods_cat.join(',')
+    // 处理动态参数
+    state.manyTable.forEach(item => {
+      const newInfo = { attr_id: item.attr_id, attr_vals: item.attr_vals.join(' ') }
+      state.addform.attrs.push(newInfo)
     })
+    // 处理静态参数
+    state.onlyTable.forEach(item => {
+      const newInfo = { attr_id: item.attr_id, attr_vals: item.attr_vals }
+      state.addform.attrs.push(newInfo)
+    })
+    form.attrs = state.addform.attrs
+    // console.log(form)
+    const { data: result } = await internalInstance.appContext.config.globalProperties.$http.post('goods', form)
+    // console.log(result)
+    if (result.meta.status !== 201) {
+      router.push('/goods')
+      // return ElMessage.error(`添加商品失败: ${result.meta.msg}`)
+    }
+    ElMessage.success(`${result.meta.msg}`)
+    router.push('/goods')
   })
 }
+
 </script>
 <style scoped lang='less'>
 .demo-tabs .baseInfo .el-input{
@@ -289,7 +313,7 @@ const addGood = async () => {
 .el-checkbox{
   margin: 0 5px 0 0 !important;
 }
-.addBtn{
+button{
   margin-top: 30px;
 }
 </style>

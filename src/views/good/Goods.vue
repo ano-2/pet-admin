@@ -12,7 +12,7 @@
       <el-row :gutter="30">
         <el-col :span="9">
           <el-input
-            placeholder="搜索商品"
+            placeholder="搜索商品名"
             class="input-with-select"
             v-model="queryInfo.query"
             clearable
@@ -30,16 +30,12 @@
       <el-card class="box-card">
         <el-table :data="state.goodList" style="width: 100%" stripe>
             <el-table-column type="index"></el-table-column>
-            <el-table-column prop="goods_name" label="商品名称" width="200" >
-            </el-table-column>
-            <el-table-column prop="goods_price" label="商品价格">
-            </el-table-column>
+            <el-table-column prop="goods_name" label="商品名称" width="200" ></el-table-column>
+            <el-table-column prop="goods_price" label="商品价格"></el-table-column>
             <el-table-column prop="goods_weight" label="商品重量"></el-table-column>
             <el-table-column prop="goods_number" label="商品数量"></el-table-column>
             <el-table-column prop="upd_time" label="更新时间"></el-table-column>
             <el-table-column prop="cat_id" label="类别id"></el-table-column>
-            <el-table-column prop="cat_one_id" label="类别一级id"></el-table-column>
-            <el-table-column prop="goods_state" label="状态" ></el-table-column>
           <el-table-column fixed="right" label="Operations" width="100">
             <template #default="scope">
               <el-tooltip
@@ -49,7 +45,7 @@
                 placement="top"
                 :enterable="false"
               >
-                <el-button type="primary" icon="el-icon-edit" @click="editor(scope.row)" size="small" circle />
+                <el-button type="primary" icon="el-icon-edit" size="small" circle />
               </el-tooltip>
               <!-- 删除用户 -->
 
@@ -60,7 +56,7 @@
                     placement="top"
                     :enterable="false"
                   >
-                    <el-button  type="danger" icon="el-icon-delete" @click="deleteor(scope.row)" size="small" circle />
+                    <el-button  type="danger" icon="el-icon-delete" @click="deleteGoods(scope.row.goods_id)" size="small" circle />
                   </el-tooltip>
             </template>
           </el-table-column>
@@ -86,8 +82,9 @@
 
 <script setup>
 import { reactive, getCurrentInstance } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import Bread from '@/components/sideLists/bread.vue'
+import router from '@/router'
 // 面包屑
 const breadList = [{
   id: 1,
@@ -120,6 +117,7 @@ const getGoodsList = async () => {
   if (res.meta.status !== 200) {
     return ElMessage.error('获取商品列表失败')
   }
+  console.log(res.data.goods)
   state.total = res.data.total
   state.goodList = res.data.goods
 //   state.total = res.data.total
@@ -134,6 +132,32 @@ const handleCurrentChange = (newValue) => {
   queryInfo.pagenum = newValue
   getGoodsList()
 }
+// 添加商品
+const addGoods = () => {
+  router.push('/addGood')
+}
+// 删除商品
+const deleteGoods = async (id) => {
+  const confirms = ElMessageBox
+  const result = await confirms
+    .confirm('此操作将永久删除该商品, 是否继续?', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+    .catch((err) => err)
+
+  if (result !== 'confirm') {
+    return ElMessage.info('已取消删除操作')
+  }
+  const { data: res } = await internalInstance.appContext.config.globalProperties.$http.delete(`goods/${id}`)
+  if (res.meta.status !== 200) {
+    return ElMessage.error('已取消删除操作')
+  }
+  getGoodsList()
+  return ElMessage.success('删除成功')
+}
+
 </script>
 <style scoped lang='less'>
 .el-card{

@@ -1,4 +1,50 @@
 <!-- eslint-disable vue/multi-word-component-names -->
+<template>
+  <div class="container">
+      <header class="header-title">
+          <span class="linear-gradient-text">
+              PPLove
+          </span>
+      </header>
+      <div class="left">
+          <el-carousel :interval="2000" type="scroll-x">
+              <el-carousel-item v-for="slide in slides" :key="slide.id">
+                  <img :src="(slide.img)" :alt="slide.alt" />
+              </el-carousel-item>
+          </el-carousel>
+      </div>
+      <div class="right">
+          <div class="login-wrapper">
+              <div class="header">Sign in to PPLove</div>
+              <el-form
+                  label-width="80px"
+                  class="form"
+                  :model="info"
+                  :rules="rules"
+                  ref="loginForm"
+                  label-position="top"
+              >
+                  <div class="form-wrapper">
+                      <el-form-item prop="username">
+                          <input type="text" v-model="info.username" placeholder="username" class="input-item">
+                      </el-form-item>
+                      <el-form-item prop="password">
+                          <input type="password" v-model="info.password" placeholder="password" class="input-item">
+                      </el-form-item>
+                      <button type="button" class="btn" @click="valid">Login in</button>
+                  </div>
+                  <div class="msg">
+                      Don't have account?
+                      <a>Sign up</a>
+                  </div>
+              </el-form>
+          </div>
+          <div class="login-back"></div>
+      </div>
+      <footer>present by group xxxx</footer>
+    </div>
+</template>
+
 <script setup>
 import { reactive, ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
@@ -35,7 +81,7 @@ const reset = () => {
 // 用户属性存储到store
 const store = useUsersStore()
 // eslint-disable-next-line no-unused-vars
-const a = storeToRefs(store)
+storeToRefs(store)
 // 登录函数
 const router = useRouter()
 const valid = () => {
@@ -61,52 +107,6 @@ onMounted(() => {
   valid()
 })
 </script>
-
-<template>
-    <div class="container">
-        <header class="header-title">
-            <span class="linear-gradient-text">
-                PPLove
-            </span>
-        </header>
-        <div class="left">
-            <el-carousel :interval="2000" type="scroll-x">
-                <el-carousel-item v-for="slide in slides" :key="slide.id">
-                    <img :src="(slide.img)" :alt="slide.alt" />
-                </el-carousel-item>
-            </el-carousel>
-        </div>
-        <div class="right">
-            <div class="login-wrapper">
-                <div class="header">Sign in to PPLove</div>
-                <el-form
-                    label-width="80px"
-                    class="form"
-                    :model="info"
-                    :rules="rules"
-                    ref="loginForm"
-                    label-position="top"
-                >
-                    <div class="form-wrapper">
-                        <el-form-item prop="username">
-                            <input type="text" v-model="info.username" placeholder="username" class="input-item">
-                        </el-form-item>
-                        <el-form-item prop="password">
-                            <input type="password" v-model="info.password" placeholder="password" class="input-item">
-                        </el-form-item>
-                        <button class="btn" @click="valid">Login in</button>
-                    </div>
-                    <div class="msg">
-                        Don't have account?
-                        <a>Sign up</a>
-                    </div>
-                </el-form>
-            </div>
-            <div class="login-back"></div>
-        </div>
-        <footer>present by group xxxx</footer>
-      </div>
-</template>
 
 <style scoped>
 .container {

@@ -1,7 +1,8 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <!--  -->
 <template>
-  <div>welcome</div>
+  <div>coding</div>
+  <img src="@/assets/images/welcome.png" alt="">
 </template>
 
 <script setup>

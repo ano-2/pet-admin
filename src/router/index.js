@@ -17,6 +17,8 @@ const Cate = () =>
 const AddGood = () =>
   import(/* webpackChunkName: "Cate" */ '@/views/good/Add.vue')
 
+const Params = () =>
+  import(/* webpackChunkName: "Right" */ '@/views/good/Params.vue')
 const Rights = () =>
   import(/* webpackChunkName: "Right" */ '@/views/right/Rights.vue')
 
@@ -56,12 +58,20 @@ const routes = [
         component: AddGood
       },
       {
+        path: '/params',
+        component: Params
+      },
+      {
         path: '/categories',
         component: Cate
       },
       {
         path: '/rights',
         component: Rights
+      },
+      {
+        path: '/params',
+        component: Welcome
       },
       {
         path: '/roles',
